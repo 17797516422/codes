@@ -1,0 +1,104 @@
+{% load staticfiles %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <link href="https://cdn.bootcss.com/twitter-bootstrap/4.3.1/css/bootstrap.min.css" rel="stylesheet">
+
+    <style>
+        .hides {
+            display: none;
+        }
+
+        .loading {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: black;
+            opacity: 0.4;
+        }
+
+        .loading-icon {
+            width: 100px;
+            height: 30px;
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            margin-left: -50px;
+            margin-top: -15px;
+        }
+
+    </style>
+
+</head>
+<body>
+
+
+<div class="container">
+    <div class="page-header">
+        <h1>代码下载上传
+            <small>代码发布系统</small>
+        </h1>
+    </div>
+</div>
+
+<div class="col-md-offset-3 col-md-5 container">
+
+    <div class="form-group">
+        <label for="repo">路径</label>
+        <input type="text" class="form-control" id="repo" name="repo" placeholder="下载代码路径">
+    </div>
+
+
+    <div class="form-group">
+        <label for="filename">文件夹名</label>
+        <input type="text" class="form-control" id="filename" name="filename" placeholder="保存的文件夹名">
+    </div>
+
+    <input type="button" class="btn btn-success" onclick="downloadrepo()" value="提交">
+</div>
+
+<div id="loading" class="loading hides">
+    <div class="loading-icon">
+        <img src="{% static 'loading.gif' %}" alt="">
+
+    </div>
+
+
+</div>
+
+
+</body>
+<script src="https://cdn.bootcss.com/jquery/3.4.1/jquery.min.js"></script>
+
+<script>
+
+    function downloadrepo() {
+        $(".loading").removeClass("hides");
+        var code = $("#repo").val();
+        var filename = $("#filename").val();
+
+        $.ajax({
+            url: "/repo/",
+            type: "post",
+            data: {repo: code, filename: filename, csrfmiddlewaretoken: '{{ csrf_token }}'},
+            success: function (arg) {
+                console.log(arg);
+                $(".loading").addClass("hides");
+
+            },
+            error: function () {
+                $(".loading").addClass("hides");
+            }
+
+        })
+
+    }
+
+</script>
+
+
+</html>
